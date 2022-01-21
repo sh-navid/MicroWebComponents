@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<head>
+    <style>
+        body {
+            background-color: palevioletred;
+        }
+
+        .player-ctrl {
+            width: 5em;
+            height: auto;
+        }
+
+        #player-ctrl-backward,
+        #player-ctrl-forward {
+            width: 4em;
+            height: auto;
+            margin-bottom: .5em;
+        }
+
+        #player-ctrl-pause,
+        #audio {
+            display: none;
+        }
+
+        player {
+            display: inline-block;
+            background-color: white;
+            border-radius: 2em;
+            padding: 1.5em;
+        }
+
+        player time {
+            display: inline-block;
+            font-weight: bold;
+            size: 3em;
+            color: #FF006E;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+        player progress {
+            height: .5em;
+            width: 10em;
+            border-radius: .5em;
+            box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+            display: block;
+            width: 100%;
+        }
+
+        player progress::-webkit-progress-bar {
+            background-color: #e1e1e1;
+            border-radius: .5em;
+        }
+
+        player progress::-webkit-progress-value {
+            background-color: #FF006E;
+            border-radius: .5em;
+
+        }
+
+        player progress::-moz-progress-bar {
+            background-color: #FF006E;
+            /* style rules */
+        }
+    </style>
+</head>
+
+<body>
+    <player>
+        <img id="player-ctrl-backward" src="backward.png" onclick="backward()" />
+        <img id="player-ctrl-play" class="player-ctrl" src="play.png" onclick="play_audio()" />
+        <img id="player-ctrl-pause" class="player-ctrl" src="pause.png" onclick="pause_audio()" />
+        <img id="player-ctrl-forward" src="forward.png" onclick="forward()" />
+        <audio controls id="audio" onended="ended_audio()">
+            <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg">
+            <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <time id="player-current-time">AAA</time>
+        <progress id="player-current-time-progress" value="0" max="100" onclick="seek()"></progress>
+    </player>
+
+    <script>
+        //Macros
+        let _ = (id) => document.getElementById(id);
+
+        //Constants
+        const SKIP_TIME = 1;
+
+        //Pointers
+        _play = _("player-ctrl-play");
+        _pause = _("player-ctrl-pause");
+        _player = _("audio");
+        _currentTime = _("player-current-time")
+        _currentProgress = _("player-current-time-progress");
+
+        //Functions and Callbacks
+        let play_audio = () => {
+            _player.play();
+            play_view();
+        }
+
+        let pause_audio = () => {
+            _player.pause();
+            pause_view();
+        }
+
+        let forward = () => {
+            _player.currentTime += SKIP_TIME;
+        }
+
+        let backward = () => {
+            _player.currentTime -= SKIP_TIME;
+        }
+
+        let ended_audio = () => {
+            pause_view();
+        }
+
+        let seek=(ev)=>{
+            //alert(event.offsetX-_currentProgress.offsetLeft)
+        }
+
+        let play_view = () => {
+            _play.style.display = "none";
+            _pause.style.display = "inline-block";
+        }
+
+        let pause_view = () => {
+            _play.style.display = "inline-block";
+            _pause.style.display = "none";
+        }
+
+        let update_current_time_view = () => {
+            _currentTime.innerText = _player.currentTime.toFixed(2) + " S";
+            _currentProgress.value = _player.currentTime.toFixed(2) * 100 / _player.duration;
+        }
+
+        setInterval(() => {
+            update_current_time_view();
+        }, 100);
+    </script>
+</body>
